@@ -129,7 +129,7 @@
                 <executions>
                     <execution>
                         <id>bundle</id>
-                        <phase>install</phase>
+                        <phase>post-integration-test</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
