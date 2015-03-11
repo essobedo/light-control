@@ -41,6 +41,7 @@ public class CheckUpdateServlet extends HttpServlet {
         robot.writeScreenCapture(byteArrayOutputStream, quality);
         String prevHash = req.getParameter("h");
         String currentHash = Utils.hash(byteArrayOutputStream.toByteArray());
+        res.setHeader("Cache-Control", "no-cache");
         if (currentHash.equals(prevHash)) {
             res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
         } else {

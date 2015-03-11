@@ -17,10 +17,10 @@ if (qualityValue != null) {
     qualityValue = Float.toString(Float.parseFloat(qualityValue));
     qualitySet = true;
   } catch(Exception e) {
-    qualityValue = "";
+    qualityValue = "null";
   }
 } else {
-  qualityValue = "";
+  qualityValue = "null";
 }
 %>
 <html>
@@ -42,7 +42,7 @@ body {
 <script type="text/javascript">
 <!--
 var refreshFrequency = <%=frequency%>;
-var quality = "<%=qualityValue%>";
+var quality = <%=qualityValue%>;
 <%if (!frequencySet || !qualitySet) {%>
 var mobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 if (!mobileDevice) {
@@ -51,7 +51,7 @@ if (!mobileDevice) {
   refreshFrequency = 1000;
   <%}%>
   <%if (!qualitySet) {%>
-  quality = "1.0F";
+  quality = 1.0;
   <%}%>
 }
 <%}%>
@@ -146,8 +146,10 @@ function triggerClick(e,clicks, setContentArea) {
   }
   callAction("c?p=" + PosX + "," + PosY + dc + rc);
 }
-function callAction(url, callback){
+var loadingStartTime = null;
+function callAction(url, maxDuration, callback){
   var xmlhttp;
+  var status;
   if (window.XMLHttpRequest){ // code for IE7+, Firefox, Chrome, Opera, Safari
     xmlhttp=new XMLHttpRequest();
   } else {// code for IE6, IE5
@@ -155,19 +157,15 @@ function callAction(url, callback){
   }
   xmlhttp.onreadystatechange=function() {
     if (xmlhttp.readyState==4) {
-      var status = xmlhttp.status;
+      status = xmlhttp.status;
       <%if (debug) {%>
       document.getElementById("Status").innerHTML=status;
       <%}%>
-      if (status == 200) {
-        if(callback != null && typeof callback == 'function') {
-          callback(xmlhttp);
-        }
-        var q = "";
-        if (quality) {
-          q = "&q=" + quality;
-        }
-        myImg.src = "s?random="+new Date().getTime() + q;
+      if(callback != null && typeof callback == 'function') {
+        callback(xmlhttp);
+      }
+      if (status == 200 && ((/^u/).test(url) || !loadingStartTime)) {
+        reloadImg();
       }
     }
   }
@@ -176,17 +174,48 @@ function callAction(url, callback){
   <%}%>
   xmlhttp.open("GET",url,true);
   xmlhttp.send();
+  if (maxDuration && maxDuration > 0) {
+    setTimeout(function(){
+      if (!status) {
+        xmlhttp.abort();
+        if(callback != null && typeof callback == 'function') {
+          callback();
+        }
+      }
+    },maxDuration);
+
+  }
 }
-function updateHash(xmlhttp) {
-  hash = xmlhttp.responseText;
-}
-window.setInterval(function() {
+function reloadImg() {
   var q = "";
   if (quality) {
     q = "&q=" + quality;
   }
-  callAction("u?h=" + hash + q, updateHash);
-}, refreshFrequency);
+  loadingStartTime = new Date().getTime();
+  myImg.src = "s?r=" + loadingStartTime + q;
+}
+var maxDuration4UQuery = 2000;
+function updateHash(xmlhttp) {
+  if (!xmlhttp) {
+    beforeQuery = null;
+    return;
+  }
+  if (xmlhttp.status = 200 && xmlhttp.responseText && xmlhttp.responseText != "") {
+    hash = xmlhttp.responseText;
+  }
+  var time = beforeQuery;
+  if (!beforeQuery)
+    return;
+  var totalTime = new Date().getTime() - beforeQuery;
+  beforeQuery = null;
+  if (totalTime > refreshFrequency) {
+    var freq = Math.round((totalTime + refreshFrequency) * 0.005) * 100;
+    if (freq > maxDuration4UQuery) {
+      freq = maxDuration4UQuery;
+    }
+    SetRefreshFrequency(freq);
+  }
+}
 function OnPress(event) {
   var input = document.getElementById("contentInput");
   input.value = "";
@@ -222,6 +251,76 @@ function resetInput() {
   contentarea.style.height=25;
   contentarea.style.opacity=1;
 }
+var refreshTimer;
+var beforeQuery;
+var canRefresh = false;
+function SetRefreshFrequency(frequency) {
+  if (frequency < 500) {
+    frequency = 500;
+  }
+  refreshFrequency = frequency;
+  document.getElementById("Freq").innerHTML=frequency;
+  if (refreshTimer) {
+    clearInterval(refreshTimer);
+  }
+  canRefresh = false;
+  refreshTimer = window.setInterval(function() {
+    if (!canRefresh) {
+      canRefresh = true;
+      return;
+    }
+    var q = "";
+    if (quality) {
+      q = "&q=" + quality;
+    }
+    if (!beforeQuery) {
+      beforeQuery = new Date().getTime();
+      callAction("u?h=" + hash + q, maxDuration4UQuery, updateHash);
+    }
+  }, frequency);
+}
+function OnImgLoaded() {
+  error = 0;
+  if (!loadingStartTime)
+    return;
+  var totalTime = new Date().getTime() - loadingStartTime;
+  loadingStartTime = null;
+  var delta = (totalTime - refreshFrequency)
+  var threshold = refreshFrequency * 0.15;
+  if (delta <= -threshold || delta >= threshold) {
+    var freq = Math.round((totalTime + refreshFrequency) * 0.005) * 100;
+    var q = null;
+    if (freq < 500) {
+      q = quality;
+      if (!q) {
+        q = <%=Robot.SCREEN_SHOT_DEFAULT_QUALITY%>;
+      }
+      q += 0.1;
+    } else if (freq > 2000) {
+      q = quality;
+      if (!q) {
+        q = <%=Robot.SCREEN_SHOT_DEFAULT_QUALITY%>;
+      }
+      q -= 0.1;
+    }
+    if (q) {
+      if (q > 1.0) {
+        q = 1.0;
+      }
+      quality = q;
+      document.getElementById("Qua").innerHTML=quality + "F";
+    }
+    SetRefreshFrequency(freq);
+  }
+}
+var error = 0;
+function OnImgError() {
+  error++;
+  if (error > 2) {
+    return;
+  }
+  reloadImg();
+}
 window.addEventListener('DOMContentLoaded', function() {
   var input = document.getElementById("contentInput");
   var focus = function(e) {
@@ -243,7 +342,7 @@ window.addEventListener('DOMContentLoaded', function() {
 </head>
 <body>
 <p>Right Click: <input id="rightClick" type="checkbox" value="false"/> Enter Content: </p>
-<img src="s" width="<%=Robot.SCREEN_DIMENSION.width%>" height="<%=Robot.SCREEN_DIMENSION.height%>" alt="" id="screenshot" />
+<img src="s" width="<%=Robot.SCREEN_DIMENSION.width%>" height="<%=Robot.SCREEN_DIMENSION.height%>" alt="" id="screenshot" onload="OnImgLoaded()" onerror="OnImgError()"/>
 <div id="contentarea" style="position: absolute"><input id="contentInput" type="text" onkeydown="OnPress(event)" onblur="resetInput()"/> <button id="enter" onclick="OnEnter(event)">OK</button></div>
 <script type="text/javascript">
 <!--
@@ -258,12 +357,12 @@ resetInput();
 <p>Refresh frequency: <span id="Freq"></span> <img src="img/info.gif" alt="To modify the default frequency reload the page and add ?f=&lt;new frequency value&gt; at the end of the URL" title="To modify the default frequency reload the page and add ?f=&lt;new frequency value&gt; at the end of the URL"/> Image quality: <span id="Qua"></span> <img src="img/info.gif" alt="To modify the default quality reload the page and add ?q=&lt;new quality value&gt; at the end of the URL" title="To modify the default quality reload the page and add ?q=&lt;new quality value&gt; at the end of the URL"/>
 <script type="text/javascript">
 <!--
-document.getElementById("Freq").innerHTML=refreshFrequency;
-if (quality == "") {
+if (!quality) {
   document.getElementById("Qua").innerHTML="<%=Robot.SCREEN_SHOT_DEFAULT_QUALITY%>F";
 } else {
-  document.getElementById("Qua").innerHTML=quality;
+  document.getElementById("Qua").innerHTML=quality + "F";
 }
+SetRefreshFrequency(refreshFrequency);
 //-->
 </script>
 </p>

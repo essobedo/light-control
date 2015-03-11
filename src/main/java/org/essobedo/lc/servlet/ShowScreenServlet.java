@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 public class ShowScreenServlet extends HttpServlet {
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
         res.setContentType(Robot.SCREEN_SHOT_CONTENT_TYPE);
+        res.setHeader("Cache-Control", "no-cache");
         Robot robot = new Robot();
         float quality = Utils.getQuality(req.getParameter("q"));
         robot.writeScreenCapture(res.getOutputStream(), quality);
