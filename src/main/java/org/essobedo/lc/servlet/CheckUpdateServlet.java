@@ -18,8 +18,8 @@
  */
 package org.essobedo.lc.servlet;
 
-import org.essobedo.lc.tool.Utils;
 import org.essobedo.lc.service.Robot;
+import org.essobedo.lc.tool.Utils;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

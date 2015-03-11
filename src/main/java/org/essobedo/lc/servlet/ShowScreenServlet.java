@@ -18,14 +18,14 @@
  */
 package org.essobedo.lc.servlet;
 
-import org.essobedo.lc.tool.Utils;
 import org.essobedo.lc.service.Robot;
+import org.essobedo.lc.tool.Utils;
 
-import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * @author <a href="mailto:nicolas.filotto@exoplatform.com">Nicolas Filotto</a>

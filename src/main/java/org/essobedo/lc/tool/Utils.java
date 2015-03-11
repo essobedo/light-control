@@ -18,8 +18,6 @@
  */
 package org.essobedo.lc.tool;
 
-import org.essobedo.lc.service.*;
-
 import java.awt.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -34,10 +32,12 @@ public class Utils {
      */
     private static final String ALGORITHM = "MD5";
 
-    private Utils() {}
+    private Utils() {
+    }
 
     /**
      * Converts a String representation of the coordinates in the screen into a Point
+     *
      * @param coordinates the String representation of the coordinates
      * @return the corresponding Point
      * @throws java.lang.RuntimeException if the coordinates could not be extracted
@@ -56,6 +56,7 @@ public class Utils {
 
     /**
      * Extracts the quality from the given value it is valid, returns the default value otherwise
+     *
      * @param qualityValue the value from which we extract the quality
      * @return the related quality
      */
@@ -63,7 +64,7 @@ public class Utils {
         float quality = org.essobedo.lc.service.Robot.SCREEN_SHOT_DEFAULT_QUALITY;
         if (qualityValue != null) {
             float q = Float.parseFloat(qualityValue);
-            if (q >= 0.0F && q <= 1.0F) {
+            if (q > 0.0F && q <= 1.0F) {
                 quality = q;
             }
         }
@@ -72,6 +73,7 @@ public class Utils {
 
     /**
      * Generates a checksum of the given input
+     *
      * @param input the data to convert into a checksum
      * @return the checksum of the related input
      */

@@ -306,6 +306,8 @@ function OnImgLoaded() {
     if (q) {
       if (q > 1.0) {
         q = 1.0;
+      } else if (q < 0.1) {
+        q = 0.1;
       }
       quality = q;
       document.getElementById("Qua").innerHTML=quality + "F";

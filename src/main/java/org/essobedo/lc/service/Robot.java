@@ -66,9 +66,9 @@ public class Robot {
     /**
      * Writes the screen capture on the given output stream
      *
-     * @param out the stream where the capture will be written
+     * @param out     the stream where the capture will be written
      * @param quality the compression quality its value is between <code>0</code>
-     * and <code>1</code>
+     *                and <code>1</code>
      * @throws IOException if any exception occurs
      */
     public void writeScreenCapture(OutputStream out, float quality) throws IOException {
@@ -110,11 +110,11 @@ public class Robot {
     /**
      * Moves the mouse at the provided place and emulate a mouse click
      *
-     * @param x          the x position of the mouse
-     * @param y          the y position of the mouse
-     * @param mainButton indicates whether the main button should be used or not. The main button is
-     *                   actually the left button so if it is set to <code>true</code> a left click
-     *                   will be emulated otherwise it will be a right click.
+     * @param x           the x position of the mouse
+     * @param y           the y position of the mouse
+     * @param mainButton  indicates whether the main button should be used or not. The main button is
+     *                    actually the left button so if it is set to <code>true</code> a left click
+     *                    will be emulated otherwise it will be a right click.
      * @param doubleClick indicates whether the click is a double click or a single click
      */
     public void click(int x, int y, boolean mainButton, boolean doubleClick) {
