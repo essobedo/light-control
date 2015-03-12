@@ -29,6 +29,8 @@ import java.awt.*;
 import java.io.IOException;
 
 /**
+ * This servlet will propagate the remote click on the local server
+ *
  * @author <a href="mailto:nicolas.filotto@exoplatform.com">Nicolas Filotto</a>
  * @version $Id$
  */

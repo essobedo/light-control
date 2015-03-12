@@ -18,29 +18,27 @@
  */
 package org.essobedo.lc.servlet;
 
-import org.essobedo.lc.service.Robot;
-import org.essobedo.lc.tool.Utils;
+import org.essobedo.lc.service.ScreenCaptureManager;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
+ * This servlet checks if the provided hash matches with the hash of the current snapshot
+ * if so it will answer with the HTTP code NOT MODIFIED otherwise it will answer OK with
+ * the new hash has content of the response/
+ *
  * @author <a href="mailto:nicolas.filotto@exoplatform.com">Nicolas Filotto</a>
  * @version $Id$
  */
 @WebServlet(name = "check", urlPatterns = {"/u"})
 public class CheckUpdateServlet extends HttpServlet {
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        Robot robot = new Robot();
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        float quality = Utils.getQuality(req.getParameter("q"));
-        robot.writeScreenCapture(byteArrayOutputStream, quality);
         String prevHash = req.getParameter("h");
-        String currentHash = Utils.hash(byteArrayOutputStream.toByteArray());
+        String currentHash = ScreenCaptureManager.getCurrentHash();
         res.setHeader("Cache-Control", "no-cache");
         if (currentHash.equals(prevHash)) {
             res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);

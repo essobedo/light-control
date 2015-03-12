@@ -27,6 +27,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
+ * This servlet will propagate the hit of a key on the local server
+ *
  * @author <a href="mailto:nicolas.filotto@exoplatform.com">Nicolas Filotto</a>
  * @version $Id$
  */

@@ -1,4 +1,5 @@
 <%@ page import="org.essobedo.lc.service.Robot"%>
+<%@ page import="org.essobedo.lc.service.ScreenCaptureManager"%>
 <%
 boolean debug = false;
 String frequencyValue = request.getParameter("f");
@@ -129,8 +130,9 @@ function triggerClick(e,clicks, setContentArea) {
   var PosX = ImgPos[0];
   var PosY = ImgPos[1];
   if (setContentArea) {
-    contentarea.style.top=PosY;
-    contentarea.style.left=PosX;
+    var ImgPos = FindPosition(myImg);
+    contentarea.style.top=PosY + ImgPos[1];
+    contentarea.style.left=PosX + ImgPos[0];
     contentarea.style.width=0;
     contentarea.style.height=0;
     contentarea.style.opacity=0;
@@ -253,7 +255,6 @@ function resetInput() {
 }
 var refreshTimer;
 var beforeQuery;
-var canRefresh = false;
 function SetRefreshFrequency(frequency) {
   if (frequency < 500) {
     frequency = 500;
@@ -263,19 +264,10 @@ function SetRefreshFrequency(frequency) {
   if (refreshTimer) {
     clearInterval(refreshTimer);
   }
-  canRefresh = false;
   refreshTimer = window.setInterval(function() {
-    if (!canRefresh) {
-      canRefresh = true;
-      return;
-    }
-    var q = "";
-    if (quality) {
-      q = "&q=" + quality;
-    }
     if (!beforeQuery) {
       beforeQuery = new Date().getTime();
-      callAction("u?h=" + hash + q, maxDuration4UQuery, updateHash);
+      callAction("u?h=" + hash, maxDuration4UQuery, updateHash);
     }
   }, frequency);
 }
@@ -293,13 +285,13 @@ function OnImgLoaded() {
     if (freq < 500) {
       q = quality;
       if (!q) {
-        q = <%=Robot.SCREEN_SHOT_DEFAULT_QUALITY%>;
+        q = <%=ScreenCaptureManager.SCREEN_CAPTURE_DEFAULT_QUALITY%>;
       }
       q += 0.1;
     } else if (freq > 2000) {
       q = quality;
       if (!q) {
-        q = <%=Robot.SCREEN_SHOT_DEFAULT_QUALITY%>;
+        q = <%=ScreenCaptureManager.SCREEN_CAPTURE_DEFAULT_QUALITY%>;
       }
       q -= 0.1;
     }
@@ -360,7 +352,7 @@ resetInput();
 <script type="text/javascript">
 <!--
 if (!quality) {
-  document.getElementById("Qua").innerHTML="<%=Robot.SCREEN_SHOT_DEFAULT_QUALITY%>F";
+  document.getElementById("Qua").innerHTML="<%=ScreenCaptureManager.SCREEN_CAPTURE_DEFAULT_QUALITY%>F";
 } else {
   document.getElementById("Qua").innerHTML=quality + "F";
 }

@@ -35,9 +35,9 @@ To know the hash of your password, you can use this web site http://md5.gromweb.
 NB: What is described below as *tap* is actually a relatively slow click on a mobile device. This is needed to be able to
 simulate a double click or more on a mobile device since a double click is already used to zoom on a picture.
 
-* For a simple (left) click, simply *click or tap* (for mobile) on the screenshot.
-* For a double click, simply *click twice or tap twice* on the screenshot.
-* For a right click, check first the checkbox that has been added for this purpose then click or tap on the screenshot, the
+* For a simple (left) click, simply *click or tap* (for mobile) on the screen capture.
+* For a double click, simply *click twice or tap twice* on the screen capture.
+* For a right click, check first the checkbox that has been added for this purpose then click or tap on the screen capture, the
 checkbox will be automatically unchecked once done.
 
 In case you want to enter some content, simply enter the content in the input text that has been added for this purpose,
@@ -45,7 +45,7 @@ everything that you will enter in this field will be propagated over the target 
 Clicking on the button *OK* is similar to pressing *Enter* in the text field.
 
 As it is not always convenient to use this text field to enter content as you could not see what you're actually typing,
-I added the notion of *triple click / tap* to allow to activate the keyboard at the place of your choice in the screenshot.
+I added the notion of *triple click / tap* to allow to activate the keyboard at the place of your choice in the screen capture.
 If the *triple click / tap* has been detected, the text field should disappear, it will only reappear when you will click
 anywhere else.
 

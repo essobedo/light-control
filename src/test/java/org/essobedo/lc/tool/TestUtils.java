@@ -18,8 +18,8 @@
  */
 package org.essobedo.lc.tool;
 
+import org.essobedo.lc.service.ScreenCaptureManager;
 import org.junit.Assert;
-import org.essobedo.lc.service.Robot;
 import org.junit.Test;
 
 import java.awt.*;
@@ -65,7 +65,7 @@ public class TestUtils {
 
     @Test
     public void testGetQuality() {
-        Assert.assertEquals(Robot.SCREEN_SHOT_DEFAULT_QUALITY, Utils.getQuality(null), 0f);
+        Assert.assertEquals(ScreenCaptureManager.SCREEN_CAPTURE_DEFAULT_QUALITY, Utils.getQuality(null), 0f);
         try {
             Utils.getQuality("foo");
             Assert.fail("A RuntimeException was expected");
@@ -75,8 +75,8 @@ public class TestUtils {
         Assert.assertEquals(0.5f, Utils.getQuality("0.5"), 0f);
         Assert.assertEquals(1f, Utils.getQuality("1"), 0f);
         Assert.assertEquals(1f, Utils.getQuality("1.0"), 0f);
-        Assert.assertEquals(Robot.SCREEN_SHOT_DEFAULT_QUALITY, Utils.getQuality("0"), 0f);
-        Assert.assertEquals(Robot.SCREEN_SHOT_DEFAULT_QUALITY, Utils.getQuality("1.1"), 0f);
+        Assert.assertEquals(ScreenCaptureManager.SCREEN_CAPTURE_DEFAULT_QUALITY, Utils.getQuality("0"), 0f);
+        Assert.assertEquals(ScreenCaptureManager.SCREEN_CAPTURE_DEFAULT_QUALITY, Utils.getQuality("1.1"), 0f);
     }
 
     @Test

@@ -18,7 +18,7 @@
  */
 package org.essobedo.lc.servlet;
 
-import org.essobedo.lc.service.Robot;
+import org.essobedo.lc.service.ScreenCaptureManager;
 import org.essobedo.lc.tool.Utils;
 
 import javax.servlet.annotation.WebServlet;
@@ -28,16 +28,17 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
+ * This servlet will return content of the current snapshot.
+ *
  * @author <a href="mailto:nicolas.filotto@exoplatform.com">Nicolas Filotto</a>
  * @version $Id$
  */
 @WebServlet(name = "show", urlPatterns = {"/s"})
 public class ShowScreenServlet extends HttpServlet {
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        res.setContentType(Robot.SCREEN_SHOT_CONTENT_TYPE);
+        res.setContentType(ScreenCaptureManager.SCREEN_CAPTURE_CONTENT_TYPE);
         res.setHeader("Cache-Control", "no-cache");
-        Robot robot = new Robot();
         float quality = Utils.getQuality(req.getParameter("q"));
-        robot.writeScreenCapture(res.getOutputStream(), quality);
+        ScreenCaptureManager.writeScreenCapture(res.getOutputStream(), quality);
     }
 }

@@ -18,28 +18,18 @@
  */
 package org.essobedo.lc.service;
 
-import javax.imageio.*;
-import javax.imageio.stream.ImageOutputStream;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Iterator;
 
 /**
+ * This class is the facade of the class java.awt.Robot, allowing to simplify and reduce the code to
+ * what we really need for the purpose of this project
+ *
  * @author <a href="mailto:nicolas.filotto@exoplatform.com">Nicolas Filotto</a>
  * @version $Id$
  */
 public class Robot {
-    /**
-     * The content type to use for the screen shots.
-     */
-    public static final String SCREEN_SHOT_CONTENT_TYPE = "image/jpeg";
-    /**
-     * The default quality of the screen shots.
-     */
-    public static final float SCREEN_SHOT_DEFAULT_QUALITY = 0.2F;
     /**
      * The dimension of the screen
      */
@@ -48,10 +38,6 @@ public class Robot {
      * The size of the screen
      */
     private static final Rectangle SCREEN_SIZE = new Rectangle(SCREEN_DIMENSION);
-    /**
-     * The format of the screen shots.
-     */
-    private static final String SCREEN_SHOT_FORMAT = "jpg";
 
     private final java.awt.Robot robot;
 
@@ -64,47 +50,12 @@ public class Robot {
     }
 
     /**
-     * Writes the screen capture on the given output stream
-     *
-     * @param out     the stream where the capture will be written
-     * @param quality the compression quality its value is between <code>0</code>
-     *                and <code>1</code>
-     * @throws IOException if any exception occurs
+     * @return Gives the content of the current screen capture
      */
-    public void writeScreenCapture(OutputStream out, float quality) throws IOException {
+    public BufferedImage getCurrentScreenCapture() {
         BufferedImage im = robot.createScreenCapture(SCREEN_SIZE);
         im.flush();
-        ImageWriter writer = null;
-
-        Iterator<ImageWriter> iterator = ImageIO.getImageWritersByFormatName(SCREEN_SHOT_FORMAT);
-        if (iterator.hasNext()) {
-            writer = iterator.next();
-        }
-        if (writer == null) {
-            return;
-        }
-        ImageOutputStream output;
-        try {
-            output = ImageIO.createImageOutputStream(out);
-        } catch (IOException e) {
-            throw new IIOException("Can't create output stream!", e);
-        }
-        writer.setOutput(output);
-
-        ImageWriteParam param = writer.getDefaultWriteParam();
-        // compress to a given quality
-        param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-        param.setCompressionQuality(quality);
-
-        try {
-            // appends a complete image stream containing a single image and
-            //associated stream and image metadata and thumbnails to the output
-            writer.write(null, new IIOImage(im, null, null), param);
-        } finally {
-            writer.dispose();
-            out.flush();
-            out.close();
-        }
+        return im;
     }
 
     /**

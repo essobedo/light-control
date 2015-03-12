@@ -18,11 +18,15 @@
  */
 package org.essobedo.lc.tool;
 
+import org.essobedo.lc.service.ScreenCaptureManager;
+
 import java.awt.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
+ * This is a class that provides a set of tools.
+ *
  * @author <a href="mailto:nicolas.filotto@exoplatform.com">Nicolas Filotto</a>
  * @version $Id$
  */
@@ -61,7 +65,7 @@ public class Utils {
      * @return the related quality
      */
     public static float getQuality(String qualityValue) {
-        float quality = org.essobedo.lc.service.Robot.SCREEN_SHOT_DEFAULT_QUALITY;
+        float quality = ScreenCaptureManager.SCREEN_CAPTURE_DEFAULT_QUALITY;
         if (qualityValue != null) {
             float q = Float.parseFloat(qualityValue);
             if (q > 0.0F && q <= 1.0F) {
