@@ -21,7 +21,9 @@ As I wanted something as light as possible, I decided to rely on *Jetty* so the 
 distribution that has been modified to configure the *JAAS* realm of the project called *LC Realm* and to deploy the web
 application of the project.
 
-So to launch it, simply unzip *light-control-${version}.zip*, go to the bin directory and launch *./jetty.sh*.
+So to launch it, simply unzip *light-control-${version}.zip*, go to the bin directory and launch *./jetty.sh*. On Windows 
+environment, you will need to launch it manually by launching from the root directory of the project 
+*java -Djetty.logs=./logs -Djetty.home=. -Djetty.base=. -Djava.io.tmpdir=/tmp -jar start.jar jetty.state=./jetty.state jetty-logging.xml jetty-started.xml* 
 
 ## How to access it?
 
