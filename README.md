@@ -1,8 +1,8 @@
-# light-control
+# Light-Control
 
 ## What is it for?
 
-The main target of this project is to be able to take control of a given server from any devices that can open a simple
+The main target of this project is to be able to take control of a given server from any device that can open a simple
 and light web page within the same local network.
 
 ## What do I need?
