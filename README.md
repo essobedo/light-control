@@ -46,14 +46,14 @@ everything that you will enter in this field will be propagated over the target 
 to pressing *Enter* in the text field. 
 * To execute specific actions at the place of your choice in the screen capture, you will need to *triple click / tap* 
 on the screen capture to show the menu then click on the action of your choice, the available item menus are:
-** The right click item menu is similar to the right click described before except that you don't rely on the checkbox anymore.
-** The enter content item menu is similar to the right click described before except that you will make the keyboard appear
+    * The right click item menu is similar to the right click described before except that you don't rely on the checkbox anymore.
+    * The enter content item menu is similar to the right click described before except that you will make the keyboard appear
 near the place you want to input some content which is much better in term of user experience as you could not see what 
 you're actually typing with the other mode. Please note that the text field will disappear when you use this mode, it will
  only reappear when you will click anywhere else.
-** The page up item menu allows you to emulate what you can do with a wheel mouse to display the content of the previous page.
-** The page down item menu allows you to emulate what you can do with a wheel mouse to display the content of the next page.
-** The move pointer item menu allows you to move the pointer of the mouse to a specific location without performing a click which
+    * The page up item menu allows you to emulate what you can do with a wheel mouse to display the content of the previous page.
+    * The page down item menu allows you to emulate what you can do with a wheel mouse to display the content of the next page.
+    * The move pointer item menu allows you to move the pointer of the mouse to a specific location without performing a click which
 can be interesting in case you need to interact with components that perform some actions when the mouse is over them.
 
 The last things to know are the *Refresh frequency* and the *Image quality*. The *Refresh frequency* is the time
@@ -74,5 +74,5 @@ https://wiki.eclipse.org/Jetty/Howto/Configure_SSL
 
 # In which maven repositories can I found the binaries of the project?
 
-So far the binaries are compiled with *Java 8 *and published on *maven central* from http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22light-control%22
+So far the binaries are compiled with *Java 8* and published on *maven central* from http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22light-control%22
 and *sonatype* from https://oss.sonatype.org/content/groups/public/com/github/essobedo/light-control/
