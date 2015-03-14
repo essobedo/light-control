@@ -69,7 +69,7 @@ As you may have noticed, this project relies on the *BASIC* authentication which
 the HTTP headers so if you intend to use it in non secure network, I highly encourage you to configure SSL as described here
 https://wiki.eclipse.org/Jetty/Howto/Configure_SSL
 
-# In which maven repositories can I found the binaries of the project?
+## In which maven repositories can I found the binaries of the project?
 
 So far the binaries are compiled with *Java 8* and published on *maven central* from http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22light-control%22
 and *sonatype* from https://oss.sonatype.org/content/groups/public/com/github/essobedo/light-control/
