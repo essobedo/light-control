@@ -37,6 +37,11 @@ import java.util.List;
 @WebServlet(name = "hit", urlPatterns = {"/h"})
 public class HitKeyServlet extends HttpServlet {
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        String content = req.getParameter("s");
+        if (content != null) {
+            Robot.transfer(content);
+            return;
+        }
         String codes = req.getParameter("c");
         List<Integer> lCodes = Utils.extractKeyCodes(codes);
         Robot.hit(lCodes);

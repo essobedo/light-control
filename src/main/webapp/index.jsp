@@ -295,25 +295,47 @@ function updateHash(xmlhttp) {
   }
 }
 var keyCodes = null;
+var content = null;
 var keyPressAction;
-function OnPress(event) {
+function onKeyUp(event) {
   if (keyPressAction) {
     clearTimeout(keyPressAction);
   }
   var input = document.getElementById("contentInput");
+  var val = input.value;
   input.value = "";
-  var key = event.which || event.keyCode; // event.keyCode is used for IE8 and earlier versions
-  if (key == 13)
-    key = 10;
-  if (key == 173 || key == 189)
-    key = 109;
-  addKey(key);
-  keyPressAction = setTimeout(function(){
-    sendKeys();
-    clearTimeout(keyPressAction);   // clear the timeout
-  }, clickTimeout);
+  if (val) {
+    if (keyCodes) {
+      sendKeys();
+    }
+    addContent(val);
+    keyPressAction = setTimeout(function(){
+      sendContent();
+      clearTimeout(keyPressAction);   // clear the timeout
+    }, clickTimeout);
+  } else {
+    if (content) {
+      sendContent();
+    }
+    var key = event.which || event.keyCode; // event.keyCode is used for IE8 and earlier versions
+    if (key == 13)
+      key = 10;
+    if (key == 173 || key == 189)
+      key = 109;
+    addKey(key);
+    keyPressAction = setTimeout(function(){
+      sendKeys();
+      clearTimeout(keyPressAction);   // clear the timeout
+    }, clickTimeout);
+  }
 }
 function OnEnter(e) {
+  if (keyPressAction) {
+    clearTimeout(keyPressAction);
+  }
+  if (content) {
+    sendContent();
+  }
   addKey(10);
   sendKeys();
 }
@@ -324,6 +346,19 @@ function addKey(key) {
     keyCodes = keyCodes + ",";
   }
   keyCodes = keyCodes + key;
+}
+function addContent(val) {
+  if (!content) {
+    content = "";
+  }
+  content = content + val;
+}
+function sendContent() {
+  if (!content) {
+    return;
+  }
+  callAction("h?s=" + content);
+  content = null;
 }
 function sendKeys() {
   if (!keyCodes) {
@@ -438,7 +473,7 @@ window.addEventListener('DOMContentLoaded', function() {
 <body>
 <p>Right Click: <input id="rightClick" type="checkbox" value="false"/> Enter Content: </p>
 <img src="s" width="<%=Robot.SCREEN_DIMENSION.width%>" height="<%=Robot.SCREEN_DIMENSION.height%>" alt="" id="screenshot" onload="OnImgLoaded()" onerror="OnImgError()"/>
-<div id="contentarea" style="position: absolute"><input id="contentInput" type="text" onkeydown="OnPress(event)" onblur="resetInput()"/> <button id="enter" onclick="OnEnter(event)">OK</button></div>
+<div id="contentarea" style="position: absolute"><input id="contentInput" type="text" onkeyup="onKeyUp(event)" onblur="resetInput()"/> <button id="enter" onclick="OnEnter(event)">OK</button></div>
 <script type="text/javascript">
 <!--
 var myImg = document.getElementById("screenshot");

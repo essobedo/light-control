@@ -18,8 +18,12 @@
  */
 package org.essobedo.lc.service;
 
+import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
@@ -39,6 +43,10 @@ public class Robot {
      * The size of the screen
      */
     private static final Rectangle SCREEN_SIZE = new Rectangle(SCREEN_DIMENSION);
+    /**
+     * The clipboard of the local system
+     */
+    private static final Clipboard CLIPBOARD = Toolkit.getDefaultToolkit().getSystemClipboard();
     /**
      * The unique instance of Robot
      */
@@ -131,6 +139,24 @@ public class Robot {
                 robot.keyPress(keycode);
                 robot.keyRelease(keycode);
             }
+        }
+    }
+
+    /**
+     * Transfers some content to the local server using the clipboard
+     *
+     * @param content the content to transfer
+     */
+    public static void transfer(String content) {
+        java.awt.Robot robot = getCurrentInstance();
+        synchronized (robot) {
+            StringSelection stringSelection = new StringSelection(content);
+            CLIPBOARD.setContents(stringSelection, null);
+
+            robot.keyPress(KeyEvent.VK_CONTROL);
+            robot.keyPress(KeyEvent.VK_V);
+            robot.keyRelease(KeyEvent.VK_V);
+            robot.keyRelease(KeyEvent.VK_CONTROL);
         }
     }
 }
