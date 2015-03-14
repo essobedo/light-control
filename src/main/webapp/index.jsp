@@ -1,5 +1,6 @@
 <%@ page import="org.essobedo.lc.service.Robot"%>
 <%@ page import="org.essobedo.lc.service.ScreenCaptureManager"%>
+<%@ page import="org.essobedo.lc.tool.Utils"%>
 <%
 boolean debug = false;
 String frequencyValue = request.getParameter("f");
@@ -36,8 +37,21 @@ body {
   border: 1px solid #ccc;
   border: 1px solid rgba(0, 0, 0, 0.15);
   -webkit-border-radius: 4px;
-     -moz-border-radius: 4px;
-          border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+td {
+  background-color: #f5f5f5;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  padding: 5px;
+  cursor: default;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  width: 100px;
+  height: 35px;
+  text-align: center;
 }
 </style>
 <script type="text/javascript">
@@ -90,7 +104,7 @@ function GetCoordinates(e) {
 var action;
 var lastTouch;
 var pressTimer;
-var clickTimeout = 600;
+var clickTimeout = 700;
 function OnMouseUp(e) {
   clearTimeout(pressTimer);   // clear the timeout
 }
@@ -100,7 +114,13 @@ function OnMouseDown(e) {
   }, clickTimeout);
 }
 var totalClicks = 0;
+var currentEvt = null;
 function OnClick(e) {
+  currentEvt = null;
+  if (menu.style.display == "block") {
+    hideMenu();
+    return;
+  }
   ++totalClicks;
   var now = new Date().getTime();
   lastTouch = lastTouch || now + 1;
@@ -109,8 +129,15 @@ function OnClick(e) {
   lastTouch = now;
   if(delta < clickTimeout && delta > 0) {
     if (totalClicks > 2) {
-      triggerClick(e, 1, true);
-      document.getElementById("contentInput").focus();
+      totalClicks = 0;
+      var ImgPos = GetCoordinates(e);
+      var PosX = ImgPos[0];
+      var PosY = ImgPos[1];
+      var ImgPos = FindPosition(myImg);
+      menu.style.top=PosY + ImgPos[1];
+      menu.style.left=PosX + ImgPos[0];
+      menu.style.display="block";
+      currentEvt = e;
     } else {
       action = setTimeout(function(evt){
         triggerClick(evt, 2);
@@ -124,8 +151,59 @@ function OnClick(e) {
     }, clickTimeout, e);
   }
 }
-function triggerClick(e,clicks, setContentArea) {
+function hideMenu() {
+  menu.style.display="none";
+  menu.style.top=<%=Robot.SCREEN_DIMENSION.height + 20%>;
+}
+function triggerRightClick() {
+  hideMenu();
+  click(currentEvt, false, true);
+}
+function triggerEnterContent() {
+  hideMenu();
+  triggerClick(currentEvt, 1, true);
+  document.getElementById("contentInput").focus();
+}
+function triggerPage(goUp) {
+  hideMenu();
+  if (!currentEvt) {
+    return;
+  }
+  var ImgPos = GetCoordinates(currentEvt);
+  var PosX = ImgPos[0];
+  var PosY = ImgPos[1];
+  var up = "";
+  if (goUp) {
+    up = "&u=1";
+  }
+  callAction("w?p=" + PosX + "," + PosY + up);
+}
+function triggerMove() {
+  hideMenu();
+  if (!currentEvt) {
+    return;
+  }
+  var ImgPos = GetCoordinates(currentEvt);
+  var PosX = ImgPos[0];
+  var PosY = ImgPos[1];
+  callAction("m?p=" + PosX + "," + PosY);
+}
+function triggerClick(e, clicks, setContentArea) {
   totalClicks = 0;
+  var double = false;
+  var right = false;
+  if (clicks > 1) {
+    double = true;
+  } else if (document.getElementById("rightClick").checked) {
+    document.getElementById("rightClick").checked = false;
+    right = true;
+  }
+  click(e, double, right, setContentArea);
+}
+function click(e, double, right, setContentArea) {
+  if (!e) {
+    return;
+  }
   var ImgPos = GetCoordinates(e);
   var PosX = ImgPos[0];
   var PosY = ImgPos[1];
@@ -138,12 +216,10 @@ function triggerClick(e,clicks, setContentArea) {
     contentarea.style.opacity=0;
   }
   var dc = "";
-  if (clicks > 1) {
-    dc = "&t=1";
-  }
   var rc = "";
-  if (document.getElementById("rightClick").checked) {
-    document.getElementById("rightClick").checked = false;
+  if (double) {
+    dc = "&t=1";
+  } else if (right) {
     rc="&b=1";
   }
   callAction("c?p=" + PosX + "," + PosY + dc + rc);
@@ -218,7 +294,12 @@ function updateHash(xmlhttp) {
     SetRefreshFrequency(freq);
   }
 }
+var keyCodes = null;
+var keyPressAction;
 function OnPress(event) {
+  if (keyPressAction) {
+    clearTimeout(keyPressAction);
+  }
   var input = document.getElementById("contentInput");
   input.value = "";
   var key = event.which || event.keyCode; // event.keyCode is used for IE8 and earlier versions
@@ -226,10 +307,30 @@ function OnPress(event) {
     key = 10;
   if (key == 173 || key == 189)
     key = 109;
-  callAction("h?c=" + key);
+  addKey(key);
+  keyPressAction = setTimeout(function(){
+    sendKeys();
+    clearTimeout(keyPressAction);   // clear the timeout
+  }, clickTimeout);
 }
 function OnEnter(e) {
-  callAction("h?c=10");
+  addKey(10);
+  sendKeys();
+}
+function addKey(key) {
+  if (!keyCodes) {
+    keyCodes = "";
+  } else {
+    keyCodes = keyCodes + ",";
+  }
+  keyCodes = keyCodes + key;
+}
+function sendKeys() {
+  if (!keyCodes) {
+    return;
+  }
+  callAction("h?c=" + keyCodes);
+  keyCodes = null;
 }
 function getOffset( el ) {
   var _x = 0;
@@ -363,5 +464,30 @@ SetRefreshFrequency(refreshFrequency);
 <%if (debug) {%>
 <p>Last request: <span id="Req"></span> Status of the last request: <span id="Status"></span></p>
 <%}%>
+<center><b>Version:</b>  <i><%=Utils.getVersion()%></i> <b>Build Date:</b> <i><%=Utils.getBuildDate()%></i></center>
+<div id="specialMenu" style="position: absolute; display: none; top: <%=Robot.SCREEN_DIMENSION.height + 20%>px">
+	<table>
+	  <tr>
+	  	<td onclick="triggerEnterContent()">Enter Content</td>
+	  </tr>
+	  <tr>
+	  	<td onclick="triggerRightClick()">Right Click</td>
+	  </tr>
+	  <tr>
+	  	<td onclick="triggerPage(true)">Page Up</td>
+	  </tr>
+	  <tr>
+	  	<td onclick="triggerPage(false)">Page Down</td>
+	  </tr>
+	  <tr>
+	  	<td onclick="triggerMove()">Move Pointer</td>
+	  </tr>
+	<table>
+</div>
+<script type="text/javascript">
+<!--
+var menu = document.getElementById("specialMenu");
+//-->
+</script>
 </body>
 </html>

@@ -23,6 +23,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.awt.*;
+import java.util.*;
+import java.util.List;
 
 /**
  * @author <a href="mailto:nicolas.filotto@exoplatform.com">Nicolas Filotto</a>
@@ -44,6 +46,12 @@ public class TestUtils {
             //expected
         }
         try {
+            Utils.extractPoint("1");
+            Assert.fail("A RuntimeException was expected");
+        } catch (RuntimeException e) {
+            //expected
+        }
+        try {
             Utils.extractPoint("foo,1");
             Assert.fail("A RuntimeException was expected");
         } catch (RuntimeException e) {
@@ -51,6 +59,12 @@ public class TestUtils {
         }
         try {
             Utils.extractPoint("1,foo");
+            Assert.fail("A RuntimeException was expected");
+        } catch (RuntimeException e) {
+            //expected
+        }
+        try {
+            Utils.extractPoint("1,1,1");
             Assert.fail("A RuntimeException was expected");
         } catch (RuntimeException e) {
             //expected
@@ -83,5 +97,54 @@ public class TestUtils {
     public void testHash() {
         Assert.assertEquals("acbd18db4cc2f85cedef654fccc4a4d8", Utils.hash("foo".getBytes()));
         Assert.assertEquals("37b51d194a7513e45b56f6524f2d51f2", Utils.hash("bar".getBytes()));
+    }
+
+    @Test
+    public void testExtractKeyCodes() {
+        try {
+            Utils.extractKeyCodes(null);
+            Assert.fail("A RuntimeException was expected");
+        } catch (RuntimeException e) {
+            //expected
+        }
+        try {
+            Utils.extractKeyCodes("foo");
+            Assert.fail("A RuntimeException was expected");
+        } catch (RuntimeException e) {
+            //expected
+        }
+        try {
+            Utils.extractKeyCodes("foo,1");
+            Assert.fail("A RuntimeException was expected");
+        } catch (RuntimeException e) {
+            //expected
+        }
+        try {
+            Utils.extractKeyCodes("1,foo");
+            Assert.fail("A RuntimeException was expected");
+        } catch (RuntimeException e) {
+            //expected
+        }
+        List<Integer> codes = Utils.extractKeyCodes("1");
+        Assert.assertEquals(1, codes.size());
+        Assert.assertEquals(1, codes.get(0).intValue());
+        codes = Utils.extractKeyCodes("  1  ");
+        Assert.assertEquals(1, codes.size());
+        Assert.assertEquals(1, codes.get(0).intValue());
+        codes = Utils.extractKeyCodes("  1, 2 ");
+        Assert.assertEquals(2, codes.size());
+        Assert.assertEquals(1, codes.get(0).intValue());
+        Assert.assertEquals(2, codes.get(1).intValue());
+        codes = Utils.extractKeyCodes("  1, 2 ,3");
+        Assert.assertEquals(3, codes.size());
+        Assert.assertEquals(1, codes.get(0).intValue());
+        Assert.assertEquals(2, codes.get(1).intValue());
+        Assert.assertEquals(3, codes.get(2).intValue());
+    }
+
+    @Test
+    public void testVersionInfo() {
+        Assert.assertNotNull(Utils.getVersion());
+        Assert.assertNotNull(Utils.getBuildDate());
     }
 }

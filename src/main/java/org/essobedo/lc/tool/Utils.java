@@ -21,8 +21,11 @@ package org.essobedo.lc.tool;
 import org.essobedo.lc.service.ScreenCaptureManager;
 
 import java.awt.*;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.*;
+import java.util.List;
 
 /**
  * This is a class that provides a set of tools.
@@ -35,6 +38,17 @@ public class Utils {
      * The name of the algorithm used for the checksum
      */
     private static final String ALGORITHM = "MD5";
+    /**
+     * The properties containing the information about the version
+     */
+    private static final Properties VERSION_INFO = new Properties();
+    static {
+        try {
+            VERSION_INFO.load(Utils.class.getResourceAsStream("/version.properties"));
+        } catch (IOException e) {
+            // ignore me as it is not blocking
+        }
+    }
 
     private Utils() {
     }
@@ -58,6 +72,27 @@ public class Utils {
         return new Point(x, y);
     }
 
+    /**
+     * Converts a String representation of a list of codes into a list of integers
+     *
+     * @param codes the String representation of the list of codes
+     * @return a list of integers representing all the key codes
+     */
+    public static List<Integer> extractKeyCodes(String codes) {
+        if (codes == null)
+            throw new RuntimeException("The codes cannot be null");
+        int index;
+        int last = 0;
+        List<Integer> result = new ArrayList<Integer>();
+        while ((index = codes.indexOf(',', last)) != -1) {
+            String code = codes.substring(last, index).trim();
+            result.add(Integer.parseInt(code));
+            last = index + 1;
+        }
+        String code = codes.substring(last).trim();
+        result.add(Integer.parseInt(code));
+        return result;
+    }
     /**
      * Extracts the quality from the given value it is valid, returns the default value otherwise
      *
@@ -95,5 +130,19 @@ public class Utils {
         for (int i = 0; i < length; i++)
             sb.append(Integer.toString((hash[i] & 0xff) + 0x100, 16).substring(1));
         return sb.toString();
+    }
+
+    /**
+     * @return the id of the current version of the project
+     */
+    public static String getVersion() {
+        return VERSION_INFO.getProperty("version");
+    }
+
+    /**
+     * @return the date of the build
+     */
+    public static String getBuildDate() {
+        return VERSION_INFO.getProperty("date");
     }
 }

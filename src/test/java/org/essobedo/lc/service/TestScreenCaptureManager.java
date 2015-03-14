@@ -36,8 +36,7 @@ import java.util.concurrent.CountDownLatch;
 public class TestScreenCaptureManager {
     @Test
     public void testWriteScreenCapture() throws Exception {
-        Robot robot = new Robot();
-        final BufferedImage img = robot.getCurrentScreenCapture();
+        final BufferedImage img = Robot.getCurrentScreenCapture();
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ScreenCaptureManager.writeImage(img, byteArrayOutputStream, 1f);
         final int refSize = byteArrayOutputStream.size();

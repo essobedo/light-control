@@ -41,7 +41,6 @@ public class ClickServlet extends HttpServlet {
         Point coordinates = Utils.extractPoint(positionValue);
         boolean mainButton = req.getParameter("b") == null;
         boolean doubleClick = req.getParameter("t") != null;
-        Robot robot = new Robot();
-        robot.click(coordinates.x, coordinates.y, mainButton, doubleClick);
+        Robot.click(coordinates.x, coordinates.y, mainButton, doubleClick);
     }
 }

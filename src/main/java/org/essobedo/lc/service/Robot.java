@@ -21,6 +21,7 @@ package org.essobedo.lc.service;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 /**
  * This class is the facade of the class java.awt.Robot, allowing to simplify and reduce the code to
@@ -38,10 +39,14 @@ public class Robot {
      * The size of the screen
      */
     private static final Rectangle SCREEN_SIZE = new Rectangle(SCREEN_DIMENSION);
+    /**
+     * The unique instance of Robot
+     */
+    private static final Robot SINGLETON = new Robot();
 
     private final java.awt.Robot robot;
 
-    public Robot() {
+    Robot() {
         try {
             this.robot = new java.awt.Robot();
         } catch (AWTException e) {
@@ -50,10 +55,17 @@ public class Robot {
     }
 
     /**
+     * @return the current instance of java.awt.Robot
+     */
+    private static java.awt.Robot getCurrentInstance() {
+        return SINGLETON.robot;
+    }
+
+    /**
      * @return Gives the content of the current screen capture
      */
-    public BufferedImage getCurrentScreenCapture() {
-        BufferedImage im = robot.createScreenCapture(SCREEN_SIZE);
+    public static BufferedImage getCurrentScreenCapture() {
+        BufferedImage im = getCurrentInstance().createScreenCapture(SCREEN_SIZE);
         im.flush();
         return im;
     }
@@ -68,14 +80,32 @@ public class Robot {
      *                    will be emulated otherwise it will be a right click.
      * @param doubleClick indicates whether the click is a double click or a single click
      */
-    public void click(int x, int y, boolean mainButton, boolean doubleClick) {
-        move(x, y);
-        int mask = mainButton ? InputEvent.BUTTON1_DOWN_MASK : InputEvent.BUTTON3_DOWN_MASK;
-        robot.mousePress(mask);
-        robot.mouseRelease(mask);
-        if (doubleClick) {
+    public static void click(int x, int y, boolean mainButton, boolean doubleClick) {
+        java.awt.Robot robot = getCurrentInstance();
+        synchronized (robot) {
+            move(x, y);
+            int mask = mainButton ? InputEvent.BUTTON1_DOWN_MASK : InputEvent.BUTTON3_DOWN_MASK;
             robot.mousePress(mask);
             robot.mouseRelease(mask);
+            if (doubleClick) {
+                robot.mousePress(mask);
+                robot.mouseRelease(mask);
+            }
+        }
+    }
+
+    /**
+     * Moves the mouse at the provided place and emulate a mouse wheel
+     *
+     * @param x the x position of the mouse
+     * @param y the y position of the mouse
+     * @param up indicates the direction of the mouse wheel, if <code>true</code> it will be up, down otherwise
+     */
+    public static void wheel(int x, int y, boolean up) {
+        java.awt.Robot robot = getCurrentInstance();
+        synchronized (robot) {
+            move(x, y);
+            robot.mouseWheel(up ? 10 : -10);
         }
     }
 
@@ -85,17 +115,22 @@ public class Robot {
      * @param x the x position of the mouse
      * @param y the y position of the mouse
      */
-    public void move(int x, int y) {
-        robot.mouseMove(Math.min(x, SCREEN_SIZE.width), Math.min(y, SCREEN_SIZE.height));
+    public static void move(int x, int y) {
+        getCurrentInstance().mouseMove(Math.min(x, SCREEN_SIZE.width), Math.min(y, SCREEN_SIZE.height));
     }
 
     /**
-     * Emulates a key press and a key release of the given key code
+     * Emulates a key press and a key release for each provided key codes
      *
-     * @param keycode the code of the key
+     * @param keyCodes the list of code of the keys to hit
      */
-    public void hit(int keycode) {
-        robot.keyPress(keycode);
-        robot.keyRelease(keycode);
+    public static void hit(List<Integer> keyCodes) {
+        java.awt.Robot robot = getCurrentInstance();
+        synchronized (robot) {
+            for (Integer keycode : keyCodes) {
+                robot.keyPress(keycode);
+                robot.keyRelease(keycode);
+            }
+        }
     }
 }

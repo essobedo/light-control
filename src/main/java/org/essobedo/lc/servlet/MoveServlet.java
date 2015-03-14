@@ -25,20 +25,21 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.awt.*;
 import java.io.IOException;
-import java.util.List;
 
 /**
- * This servlet will propagate the hit of a key on the local server
+ * This servlet will move the mouse pointer to the given location
  *
  * @author <a href="mailto:nicolas.filotto@exoplatform.com">Nicolas Filotto</a>
  * @version $Id$
  */
-@WebServlet(name = "hit", urlPatterns = {"/h"})
-public class HitKeyServlet extends HttpServlet {
+@WebServlet(name = "move", urlPatterns = {"/m"})
+public class MoveServlet extends HttpServlet {
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        String codes = req.getParameter("c");
-        List<Integer> lCodes = Utils.extractKeyCodes(codes);
-        Robot.hit(lCodes);
+        String positionValue = req.getParameter("p");
+        Point coordinates = Utils.extractPoint(positionValue);
+        Robot.move(coordinates.x, coordinates.y);
     }
 }
