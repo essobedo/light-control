@@ -141,8 +141,8 @@ public class Robot {
      * Transfers some content to the local server using the clipboard
      *
      * @param content the content to transfer
-     * @param os this is the os of the target server, it is used in case of virtualization where the host OS is
-     *        different from the guest os
+     * @param os      this is the os of the target server, it is used in case of virtualization where the host OS is
+     *                different from the guest os
      */
     public static void transfer(String content, OS os) {
         java.awt.Robot robot = getCurrentInstance();

@@ -43,10 +43,8 @@ public class HitKeyServlet extends HttpServlet {
             OS os = OS.CURRENT;
             String o = req.getParameter("o");
             if (o != null) {
-                System.out.println("o=" + o);
                 os = OS.values()[Integer.parseInt(o)];
             }
-            System.out.println("os=" + os);
             Robot.transfer(content, os);
             return;
         }

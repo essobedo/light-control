@@ -35,6 +35,10 @@
             <source>README.md</source>
             <destName>README.md</destName>
         </file>
+        <file>
+            <source>release-notes.md</source>
+            <destName>release-notes.md</destName>
+        </file>
     </files>
     <fileSets>
         <fileSet>

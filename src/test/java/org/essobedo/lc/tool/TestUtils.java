@@ -25,8 +25,9 @@ import org.junit.Test;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.util.*;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:nicolas.filotto@exoplatform.com">Nicolas Filotto</a>

@@ -48,13 +48,26 @@ public class Utils {
     private static final Properties VERSION_INFO = new Properties();
 
     static {
+        InputStream is = null;
         try {
-            VERSION_INFO.load(Utils.class.getResourceAsStream("/version.properties"));
+            is = Utils.class.getResourceAsStream("/version.properties");
+            if (is != null)
+                VERSION_INFO.load(is);
         } catch (IOException e) {
             // ignore me as it is not blocking
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    //ignore me
+                }
+            }
         }
     }
+
     private static final Map<Character, List<Integer>> BASIC_CHARACTER_MAPPING;
+
     static {
         String rootDir = System.getProperty("jetty.home");
         Map<Character, List<Integer>> map;
@@ -90,8 +103,8 @@ public class Utils {
         int index = coordinates.indexOf(',');
         if (index == -1)
             throw new RuntimeException("The format of the coordinates is not correct, the separator is missing");
-        int x = (int)Double.parseDouble(coordinates.substring(0, index));
-        int y = (int)Double.parseDouble(coordinates.substring(index + 1));
+        int x = (int) Double.parseDouble(coordinates.substring(0, index));
+        int y = (int) Double.parseDouble(coordinates.substring(index + 1));
         return new Point(x, y);
     }
 
@@ -174,7 +187,7 @@ public class Utils {
      * Gives the key codes corresponding to the given character. Negative key codes are keys that must be hold
      * the rest is supposed to be released just after been pressed
      *
-     * @param c the character for which we want the corresponding key codes
+     * @param c  the character for which we want the corresponding key codes
      * @param os the OS for which we want the key codes
      * @return an array of integers corresponding to the key codes that matches with the character.
      */
@@ -185,8 +198,8 @@ public class Utils {
         result = new ArrayList<Integer>();
         if (os == OS.WINDOWS) {
             result.add(-KeyEvent.VK_ALT);
-            for(int i = 3; i >= 0; --i) {
-                int num = (int)(c * Math.pow(10, -i)) % 10 + KeyEvent.VK_NUMPAD0;
+            for (int i = 3; i >= 0; --i) {
+                int num = (int) (c * Math.pow(10, -i)) % 10 + KeyEvent.VK_NUMPAD0;
                 result.add(num);
             }
             return result;
@@ -261,6 +274,7 @@ public class Utils {
     /**
      * Loads the resource bundles corresponding to the mapping for the given locale, it starts
      * to load mapping.properties then the one of the provided locale
+     *
      * @param parentDir the parent directory in which the resource bundle will be loaded
      * @return A map corresponding to the mapping character to key codes for the given locale
      */
@@ -273,6 +287,7 @@ public class Utils {
 
     /**
      * Loads the file at the given path and extracts the mapping between the characters and the key codes
+     *
      * @param path the path of the file from which we extract the mapping
      * @return the map that contains the mapping between the characters and the key codes
      */
@@ -280,7 +295,7 @@ public class Utils {
         Map<Character, List<Integer>> map = new HashMap<Character, List<Integer>>();
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new FileReader(path));
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(path), "UTF-8"));
             String line;
             int count = 0;
             Pattern pattern = Pattern.compile("-?(\\w+|\\d\\d+)(\\+-?(\\w+|\\d\\d+))*");
@@ -301,7 +316,7 @@ public class Utils {
                 }
                 List<Integer> codes = new ArrayList<Integer>();
                 m = p.matcher(combination);
-                while(m.find()) {
+                while (m.find()) {
                     String group = m.group(1);
                     boolean negative = (group.charAt(0) == '-');
                     if ((!negative && group.length() > 1 && Character.isDigit(group.charAt(0))) ||

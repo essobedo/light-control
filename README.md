@@ -1,4 +1,4 @@
-# Light-Control
+# ![Logo of Light-Control](logo.gif) Light-Control
 
 ## What is it for?
 
@@ -30,7 +30,7 @@ environment, you will need to launch it manually by launching from the root dire
 Once the *Jetty* instance is properly launched, simply open a browser (tested with Firefox, Chrome, Safari) of the device of your choice then go to
 *http://${ip-address-of-the-target-server}:8080*. The default account is *admin* / *@dmin@*, if you want to change it for
 something else, you simply need to modify the file *etc/login.properties* knowing that the syntax is *${login}: MD5:${hash-of-your-password},admin*.
-To know the hash of your password, you can use this web site http://md5.gromweb.com
+To know the hash of your password, you can use this [web site](http://md5.gromweb.com)
 
 ## How to use it?
 
@@ -70,28 +70,27 @@ it has been resolved thanks to resource bundles and to the way to enter unicode 
 
 The application will first load the resource bundle in *${jetty-home}/resources* called *mapping.properties* (the default one) then it will load
 the resource bundle of type *mapping_${current-locale}.properties* (if it exists) such that we can redefine the mapping of the default resource bundle
-from the resource specific to the current locale.
+from the resource specific to the current locale. Please note that the expected encoding for these files is *UTF-8*.
 
 The syntax of each line of the resource bundle is _.=-?(\w+|\d\d+)(\+-?(\w+|\d\d+))*_ in other words we have first a character then = and finally
 at least one pattern of type _-?(\w+|\d\d+)_ representing a key code, in case of several key codes, the expected separator is +. First you can
 indicate with - whether or not the following key represented by its key code should be held or not knowing that - means that the key should be held.
-A key code is either a word or a number of at least two digits. In case of a word, it expects the name of a field in the class KeyEvent http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/8-b132/java/awt/event/KeyEvent.java/
+A key code is either a word or a number of at least two digits. In case of a word, it expects the name of a field in the class [KeyEvent](http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/8-b132/java/awt/event/KeyEvent.java/)
  minus the prefix *VK_*. In case of a number, it expects directly the decimal value of the key code in if it doesn't exist in the KeyEvent class.
 
 In case, the corresponding key codes of a given character cannot be found in the resource bundles, it will rely on the way to enter unicode characters in the different OS.
 As this approach is unfortunately OS dependent, the ability to change the current OS has been added in the special action menu for the reasons described in the previous section.
 Here is what is actually done for each supported OS:
-* *Windows*: it applies the third method described here http://www.fileformat.info/tip/microsoft/enter_unicode.htm which implicitly means that it relies on the numeric keypad.
-* *Mac*: it applies what is described in this article http://wwww.poynton.com/notes/misc/mac-unicode-hex-input.html which implicitly means that the *Unicode Hex Input* needs to be enabled.
-* *Other*: it applies what is described here https://pthree.org/2006/11/30/its-unicode-baby/
+* *Windows*: it applies the third method described [here](http://www.fileformat.info/tip/microsoft/enter_unicode.htm) which implicitly means that it relies on the numeric keypad.
+* *Mac*: it applies what is described in [this article](http://wwww.poynton.com/notes/misc/mac-unicode-hex-input.html) which implicitly means that the *Unicode Hex Input* needs to be enabled.
+* *Other*: it applies what is described [here](https://pthree.org/2006/11/30/its-unicode-baby/)
 
 ## What else I need to know?
 
 As you may have noticed, this project relies on the *BASIC* authentication which means that the password is easily accessible from
-the HTTP headers so if you intend to use it in non secure network, I highly encourage you to configure SSL as described here
-https://wiki.eclipse.org/Jetty/Howto/Configure_SSL
+the HTTP headers so if you intend to use it in non secure network, I highly encourage you to configure SSL as described [here](https://wiki.eclipse.org/Jetty/Howto/Configure_SSL)
 
 ## In which maven repositories can I found the binaries of the project?
 
-So far the binaries are compiled with *Java 8* and published on *maven central* from http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22light-control%22
-and *sonatype* from https://oss.sonatype.org/content/groups/public/com/github/essobedo/light-control/
+So far the binaries are compiled with *Java 8* and published on [maven central](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22light-control%22)
+and [sonatype](https://oss.sonatype.org/content/groups/public/com/github/essobedo/light-control/)

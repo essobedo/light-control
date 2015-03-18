@@ -28,6 +28,7 @@ public enum OS {
     WINDOWS, MAC, OTHER;
 
     public static final OS CURRENT;
+
     static {
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("win")) {
