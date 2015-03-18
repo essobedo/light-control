@@ -19,6 +19,7 @@
 package org.essobedo.lc.servlet;
 
 import org.essobedo.lc.service.Robot;
+import org.essobedo.lc.tool.OS;
 import org.essobedo.lc.tool.Utils;
 
 import javax.servlet.annotation.WebServlet;
@@ -39,7 +40,14 @@ public class HitKeyServlet extends HttpServlet {
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
         String content = req.getParameter("s");
         if (content != null) {
-            Robot.transfer(content);
+            OS os = OS.CURRENT;
+            String o = req.getParameter("o");
+            if (o != null) {
+                System.out.println("o=" + o);
+                os = OS.values()[Integer.parseInt(o)];
+            }
+            System.out.println("os=" + os);
+            Robot.transfer(content, os);
             return;
         }
         String codes = req.getParameter("c");

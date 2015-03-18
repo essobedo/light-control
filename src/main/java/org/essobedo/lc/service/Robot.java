@@ -18,12 +18,11 @@
  */
 package org.essobedo.lc.service;
 
-import javax.swing.*;
+import org.essobedo.lc.tool.OS;
+import org.essobedo.lc.tool.Utils;
+
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
@@ -43,10 +42,6 @@ public class Robot {
      * The size of the screen
      */
     private static final Rectangle SCREEN_SIZE = new Rectangle(SCREEN_DIMENSION);
-    /**
-     * The clipboard of the local system
-     */
-    private static final Clipboard CLIPBOARD = Toolkit.getDefaultToolkit().getSystemClipboard();
     /**
      * The unique instance of Robot
      */
@@ -105,8 +100,8 @@ public class Robot {
     /**
      * Moves the mouse at the provided place and emulate a mouse wheel
      *
-     * @param x the x position of the mouse
-     * @param y the y position of the mouse
+     * @param x  the x position of the mouse
+     * @param y  the y position of the mouse
      * @param up indicates the direction of the mouse wheel, if <code>true</code> it will be up, down otherwise
      */
     public static void wheel(int x, int y, boolean up) {
@@ -146,17 +141,34 @@ public class Robot {
      * Transfers some content to the local server using the clipboard
      *
      * @param content the content to transfer
+     * @param os this is the os of the target server, it is used in case of virtualization where the host OS is
+     *        different from the guest os
      */
-    public static void transfer(String content) {
+    public static void transfer(String content, OS os) {
         java.awt.Robot robot = getCurrentInstance();
         synchronized (robot) {
-            StringSelection stringSelection = new StringSelection(content);
-            CLIPBOARD.setContents(stringSelection, null);
-
-            robot.keyPress(KeyEvent.VK_CONTROL);
-            robot.keyPress(KeyEvent.VK_V);
-            robot.keyRelease(KeyEvent.VK_V);
-            robot.keyRelease(KeyEvent.VK_CONTROL);
+            for (int i = 0, length = content.length(); i < length; i++) {
+                char c = content.charAt(i);
+                List<Integer> keyCodes = Utils.getKeyCodes(c, os);
+                int l = keyCodes.size();
+                for (int j = 0; j < l; j++) {
+                    int keycode = keyCodes.get(j);
+                    if (keycode > 0) {
+                        robot.keyPress(keycode);
+                        robot.keyRelease(keycode);
+                    } else {
+                        keycode = -keycode;
+                        robot.keyPress(keycode);
+                    }
+                }
+                for (int j = l - 1; j >= 0; j--) {
+                    int keycode = keyCodes.get(j);
+                    if (keycode > 0)
+                        continue;
+                    keycode = -keycode;
+                    robot.keyRelease(keycode);
+                }
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 <%@ page import="org.essobedo.lc.service.Robot"%>
 <%@ page import="org.essobedo.lc.service.ScreenCaptureManager"%>
 <%@ page import="org.essobedo.lc.tool.Utils"%>
+<%@ page import="org.essobedo.lc.tool.OS"%>
 <%
 boolean debug = false;
 String frequencyValue = request.getParameter("f");
@@ -117,7 +118,7 @@ var totalClicks = 0;
 var currentEvt = null;
 function OnClick(e) {
   currentEvt = null;
-  if (menu.style.display == "block") {
+  if (menu.style.display == "block" || subMenuOS.style.display == "block") {
     hideMenu();
     return;
   }
@@ -154,6 +155,12 @@ function OnClick(e) {
 function hideMenu() {
   menu.style.display="none";
   menu.style.top=<%=Robot.SCREEN_DIMENSION.height + 20%>;
+  subMenuOS.style.display="none";
+  subMenuOS.style.top=<%=Robot.SCREEN_DIMENSION.height + 20%>;
+}
+function hideMainMenu() {
+  menu.style.display="none";
+  menu.style.top=<%=Robot.SCREEN_DIMENSION.height + 20%>;
 }
 function triggerRightClick() {
   hideMenu();
@@ -187,6 +194,30 @@ function triggerMove() {
   var PosX = ImgPos[0];
   var PosY = ImgPos[1];
   callAction("m?p=" + PosX + "," + PosY);
+}
+var targetOS = <%=OS.CURRENT.ordinal()%>;
+var originalOS = <%=OS.CURRENT.ordinal()%>;
+function triggerChangeOS() {
+  subMenuOS.style.top = menu.style.top;
+  subMenuOS.style.left = menu.style.left;
+  hideMainMenu();
+  var menuContent = "<table>";
+  if (targetOS != 0) {
+    menuContent = menuContent + "<tr><td onclick='triggerOS(0)'>Windows</td></tr>";
+  }
+  if (targetOS != 1) {
+    menuContent = menuContent + "<tr><td onclick='triggerOS(1)'>Mac</td></tr>";
+  }
+  if (targetOS != 2) {
+    menuContent = menuContent + "<tr><td onclick='triggerOS(2)'>Other</td></tr>";
+  }
+  menuContent = menuContent + "</table>";
+  subMenuOS.innerHTML = menuContent;
+  subMenuOS.style.display = "block";
+}
+function triggerOS(os) {
+  targetOS = os;
+  hideMenu();
 }
 function triggerClick(e, clicks, setContentArea) {
   totalClicks = 0;
@@ -297,6 +328,11 @@ function updateHash(xmlhttp) {
 var keyCodes = null;
 var content = null;
 var keyPressAction;
+function onKeyDown(event) {
+  var key = event.which || event.keyCode; // event.keyCode is used for IE8 and earlier versions
+  if (key == 9)
+    event.preventDefault();
+}
 function onKeyUp(event) {
   if (keyPressAction) {
     clearTimeout(keyPressAction);
@@ -320,6 +356,8 @@ function onKeyUp(event) {
     var key = event.which || event.keyCode; // event.keyCode is used for IE8 and earlier versions
     if (key == 13)
       key = 10;
+    if (key == 9)
+      event.preventDefault();
     if (key == 173 || key == 189)
       key = 109;
     addKey(key);
@@ -357,7 +395,12 @@ function sendContent() {
   if (!content) {
     return;
   }
-  callAction("h?s=" + content);
+  content = encodeURIComponent(content);
+  var o = "";
+  if (targetOS != originalOS) {
+    o = "&o=" + targetOS;
+  }
+  callAction("h?s=" + content + o);
   content = null;
 }
 function sendKeys() {
@@ -473,7 +516,7 @@ window.addEventListener('DOMContentLoaded', function() {
 <body>
 <p>Right Click: <input id="rightClick" type="checkbox" value="false"/> Enter Content: </p>
 <img src="s" width="<%=Robot.SCREEN_DIMENSION.width%>" height="<%=Robot.SCREEN_DIMENSION.height%>" alt="" id="screenshot" onload="OnImgLoaded()" onerror="OnImgError()"/>
-<div id="contentarea" style="position: absolute"><input id="contentInput" type="text" onkeyup="onKeyUp(event)" onblur="resetInput()"/> <button id="enter" onclick="OnEnter(event)">OK</button></div>
+<div id="contentarea" style="position: absolute"><input id="contentInput" type="password" onkeyup="onKeyUp(event)" onkeydown="onKeyDown(event)" onblur="resetInput()" size="2"/> <button id="enter" onclick="OnEnter(event)">OK</button></div>
 <script type="text/javascript">
 <!--
 var myImg = document.getElementById("screenshot");
@@ -517,11 +560,17 @@ SetRefreshFrequency(refreshFrequency);
 	  <tr>
 	  	<td onclick="triggerMove()">Move Pointer</td>
 	  </tr>
-	<table>
+	  <tr>
+	  	<td onclick="triggerChangeOS()">Change OS</td>
+	  </tr>
+	</table>
+</div>
+<div id="specialSubMenuOS" style="position: absolute; display: none; top: <%=Robot.SCREEN_DIMENSION.height + 20%>px">
 </div>
 <script type="text/javascript">
 <!--
 var menu = document.getElementById("specialMenu");
+var subMenuOS = document.getElementById("specialSubMenuOS");
 //-->
 </script>
 </body>

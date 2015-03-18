@@ -23,6 +23,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.*;
 import java.util.List;
 
@@ -146,5 +148,103 @@ public class TestUtils {
     public void testVersionInfo() {
         Assert.assertNotNull(Utils.getVersion());
         Assert.assertNotNull(Utils.getBuildDate());
+    }
+
+    @Test
+    public void testLoadMapping() throws Exception {
+        String rootDir = new File(TestUtils.class.getResource("/mapping.properties").toURI()).getParent();
+        Map<Character, List<Integer>> map = Utils.loadMapping(rootDir, Locale.FRANCE);
+        Assert.assertNotNull(map);
+        Assert.assertEquals(12, map.size());
+        List<Integer> codes = map.get('a');
+        Assert.assertEquals(1, codes.size());
+        Assert.assertEquals(KeyEvent.VK_A, codes.get(0).intValue());
+        codes = map.get('A');
+        Assert.assertEquals(2, codes.size());
+        Assert.assertEquals(-KeyEvent.VK_SHIFT, codes.get(0).intValue());
+        Assert.assertEquals(KeyEvent.VK_A, codes.get(1).intValue());
+        codes = map.get('`');
+        Assert.assertEquals(1, codes.size());
+        Assert.assertEquals(KeyEvent.VK_BACK_QUOTE, codes.get(0).intValue());
+        codes = map.get('0');
+        Assert.assertEquals(2, codes.size());
+        Assert.assertEquals(KeyEvent.VK_SHIFT, codes.get(0).intValue());
+        Assert.assertEquals(KeyEvent.VK_0, codes.get(1).intValue());
+        codes = map.get('1');
+        Assert.assertEquals(2, codes.size());
+        Assert.assertEquals(-KeyEvent.VK_SHIFT, codes.get(0).intValue());
+        Assert.assertEquals(KeyEvent.VK_1, codes.get(1).intValue());
+        codes = map.get('=');
+        Assert.assertEquals(1, codes.size());
+        Assert.assertEquals(KeyEvent.VK_EQUALS, codes.get(0).intValue());
+        codes = map.get('#');
+        Assert.assertEquals(1, codes.size());
+        Assert.assertEquals(KeyEvent.VK_NUMBER_SIGN, codes.get(0).intValue());
+        codes = map.get(':');
+        Assert.assertEquals(1, codes.size());
+        Assert.assertEquals(KeyEvent.VK_COLON, codes.get(0).intValue());
+        codes = map.get('?');
+        Assert.assertEquals(2, codes.size());
+        Assert.assertEquals(KeyEvent.VK_SHIFT, codes.get(0).intValue());
+        Assert.assertEquals(KeyEvent.VK_SLASH, codes.get(1).intValue());
+        codes = map.get(' ');
+        Assert.assertEquals(1, codes.size());
+        Assert.assertEquals(KeyEvent.VK_SPACE, codes.get(0).intValue());
+        codes = map.get('2');
+        Assert.assertEquals(1, codes.size());
+        Assert.assertEquals(12, codes.get(0).intValue());
+        codes = map.get('3');
+        Assert.assertEquals(2, codes.size());
+        Assert.assertEquals(KeyEvent.VK_SHIFT, codes.get(0).intValue());
+        Assert.assertEquals(12, codes.get(1).intValue());
+    }
+
+    @Test
+    public void testGetKeyCodes() {
+        List<Integer> codes = Utils.getKeyCodes('a', OS.MAC);
+        Assert.assertEquals(1, codes.size());
+        Assert.assertEquals(KeyEvent.VK_A, codes.get(0).intValue());
+        codes = Utils.getKeyCodes('A', OS.MAC);
+        Assert.assertEquals(2, codes.size());
+        Assert.assertEquals(-KeyEvent.VK_SHIFT, codes.get(0).intValue());
+        Assert.assertEquals(KeyEvent.VK_A, codes.get(1).intValue());
+        codes = Utils.getKeyCodes('a', OS.WINDOWS);
+        Assert.assertEquals(1, codes.size());
+        Assert.assertEquals(KeyEvent.VK_A, codes.get(0).intValue());
+        codes = Utils.getKeyCodes('A', OS.WINDOWS);
+        Assert.assertEquals(2, codes.size());
+        Assert.assertEquals(-KeyEvent.VK_SHIFT, codes.get(0).intValue());
+        Assert.assertEquals(KeyEvent.VK_A, codes.get(1).intValue());
+        codes = Utils.getKeyCodes('a', OS.OTHER);
+        Assert.assertEquals(1, codes.size());
+        Assert.assertEquals(KeyEvent.VK_A, codes.get(0).intValue());
+        codes = Utils.getKeyCodes('A', OS.OTHER);
+        Assert.assertEquals(2, codes.size());
+        Assert.assertEquals(-KeyEvent.VK_SHIFT, codes.get(0).intValue());
+        Assert.assertEquals(KeyEvent.VK_A, codes.get(1).intValue());
+        codes = Utils.getKeyCodes('4', OS.MAC);
+        Assert.assertEquals(6, codes.size());
+        Assert.assertEquals(-KeyEvent.VK_ALT, codes.get(0).intValue());
+        Assert.assertEquals(KeyEvent.VK_MINUS, codes.get(1).intValue());
+        Assert.assertEquals(KeyEvent.VK_0, codes.get(2).intValue());
+        Assert.assertEquals(KeyEvent.VK_0, codes.get(3).intValue());
+        Assert.assertEquals(KeyEvent.VK_3, codes.get(4).intValue());
+        Assert.assertEquals(KeyEvent.VK_4, codes.get(5).intValue());
+        codes = Utils.getKeyCodes('4', OS.OTHER);
+        Assert.assertEquals(7, codes.size());
+        Assert.assertEquals(-KeyEvent.VK_CONTROL, codes.get(0).intValue());
+        Assert.assertEquals(-KeyEvent.VK_SHIFT, codes.get(1).intValue());
+        Assert.assertEquals(KeyEvent.VK_U, codes.get(2).intValue());
+        Assert.assertEquals(KeyEvent.VK_0, codes.get(3).intValue());
+        Assert.assertEquals(KeyEvent.VK_0, codes.get(4).intValue());
+        Assert.assertEquals(KeyEvent.VK_3, codes.get(5).intValue());
+        Assert.assertEquals(KeyEvent.VK_4, codes.get(6).intValue());
+        codes = Utils.getKeyCodes('4', OS.WINDOWS);
+        Assert.assertEquals(5, codes.size());
+        Assert.assertEquals(-KeyEvent.VK_ALT, codes.get(0).intValue());
+        Assert.assertEquals(KeyEvent.VK_NUMPAD0, codes.get(1).intValue());
+        Assert.assertEquals(KeyEvent.VK_NUMPAD0, codes.get(2).intValue());
+        Assert.assertEquals(KeyEvent.VK_NUMPAD5, codes.get(3).intValue());
+        Assert.assertEquals(KeyEvent.VK_NUMPAD2, codes.get(4).intValue());
     }
 }

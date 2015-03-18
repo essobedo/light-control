@@ -20,7 +20,10 @@ package org.essobedo.lc.service;
 
 import org.essobedo.lc.tool.Utils;
 
-import javax.imageio.*;
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 import java.awt.image.BufferedImage;
@@ -52,6 +55,7 @@ public class ScreenCaptureManager {
      */
     private static final String SCREEN_CAPTURE_FORMAT = "jpg";
     private static final ScheduledExecutorService EXECUTOR = Executors.newSingleThreadScheduledExecutor();
+
     static {
         EXECUTOR.scheduleAtFixedRate(new Runnable() {
             public void run() {
@@ -59,7 +63,9 @@ public class ScreenCaptureManager {
             }
         }, 300, 300, TimeUnit.MILLISECONDS);
     }
+
     private static volatile ScreenCapture CURRENT_SCREEN_CAPTURE;
+
     static {
         setCurrentScreenCapture();
     }

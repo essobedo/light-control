@@ -16,29 +16,27 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.essobedo.lc.servlet;
-
-import org.essobedo.lc.service.Robot;
-import org.essobedo.lc.tool.Utils;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
-import java.io.IOException;
+package org.essobedo.lc.tool;
 
 /**
- * This servlet will move the mouse pointer to the given location
+ * Enumeration that defines all the supported platform
  *
  * @author <a href="mailto:nicolas.filotto@exoplatform.com">Nicolas Filotto</a>
  * @version $Id$
  */
-@WebServlet(name = "move", urlPatterns = {"/m"})
-public class MoveServlet extends HttpServlet {
-    public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        String positionValue = req.getParameter("p");
-        Point coordinates = Utils.extractPoint(positionValue);
-        Robot.move(coordinates.x, coordinates.y);
+public enum OS {
+    WINDOWS, MAC, OTHER;
+
+    public static final OS CURRENT;
+    static {
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("win")) {
+            CURRENT = OS.WINDOWS;
+        } else if (os.contains("mac")) {
+            CURRENT = OS.MAC;
+        } else {
+            // For the sake of simplicity we assume that other is Unix or Linux environment
+            CURRENT = OS.OTHER;
+        }
     }
 }
