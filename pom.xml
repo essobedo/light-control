@@ -4,7 +4,7 @@
 
     <groupId>com.github.essobedo</groupId>
     <artifactId>light-control</artifactId>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.3</version>
     <packaging>war</packaging>
     <name>Light Control Main Project</name>
     <description>Take control of your server thanks to a light web application from any devices.</description>
@@ -20,7 +20,7 @@
         <connection>scm:git:git://github.com/essobedo/light-control</connection>
         <developerConnection>scm:git:git@github.com:essobedo/light-control</developerConnection>
         <url>https://github.com/essobedo/light-control</url>
-        <tag>HEAD</tag>
+        <tag>light-control-1.3</tag>
     </scm>
 
     <developers>
