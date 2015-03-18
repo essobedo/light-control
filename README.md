@@ -51,7 +51,7 @@ on the screen capture to show the menu then click on the action of your choice, 
     * *The page up item menu* allows you to emulate what you can do with a wheel mouse to display the content of the previous page.
     * *The page down item menu* allows you to emulate what you can do with a wheel mouse to display the content of the next page.
     * *The move pointer item menu* allows you to move the pointer of the mouse to a specific location without performing a click which can be interesting in case you need to interact with components that perform some actions when the mouse is over them.
-    * *The change os item menu* allows you to change default Operating System as the application needs to know the Operating System in order to manage properly the mapping between the characters and the key codes. This has been added to be able to manage virtualization where the host OS is different from the guest OS. The current choices are *Windows*, *Mac* and *Other* knowing that *Other* will be considered as Linux or other Unix variants.
+    * *The change os item menu* allows you to change the default Operating System as the application needs to know the Operating System in order to manage properly the mapping between the characters and the key codes. This has been added to be able to manage virtualization where the host OS is different from the guest OS. The current choices are *Windows*, *Mac* and *Other* knowing that *Other* will be considered as Linux or other Unix variants.
 
 The last things to know are the *Refresh frequency* and the *Image quality*. The *Refresh frequency* is the time
 after which it will check if a refresh is needed, it is expressed in milliseconds. The *Image quality* is the actually
@@ -72,17 +72,17 @@ The application will first load the resource bundle in *${jetty-home}/resources*
 the resource bundle of type *mapping_${current-locale}.properties* (if it exists) such that we can redefine the mapping of the default resource bundle
 from the resource specific to the current locale.
 
-The syntax of the resource bundle is _.=-?(\w+|\d\d+)(\+-?(\w+|\d\d+))*_ in other words we have first a character then = and finally
+The syntax of each line of the resource bundle is _.=-?(\w+|\d\d+)(\+-?(\w+|\d\d+))*_ in other words we have first a character then = and finally
 at least one pattern of type _-?(\w+|\d\d+)_ representing a key code, in case of several key codes, the expected separator is +. First you can
-indicates with a - whether or not the following key represented by its key code should be held or not knowing that - means that the key should be held.
+indicate with - whether or not the following key represented by its key code should be held or not knowing that - means that the key should be held.
 A key code is either a word or a number of at least two digits. In case of a word, it expects the name of a field in the class KeyEvent http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/8-b132/java/awt/event/KeyEvent.java/
- minus the prefix *VK_*. In case of a number, it expects directly the decimal value of the key code in case it doesn't exist in the KeyEvent class.
+ minus the prefix *VK_*. In case of a number, it expects directly the decimal value of the key code in if it doesn't exist in the KeyEvent class.
 
-In case, the corresponding key codes of a given character cannot be found in the resource bundle, it will rely on the way to enter unicode characters in the different OS.
+In case, the corresponding key codes of a given character cannot be found in the resource bundles, it will rely on the way to enter unicode characters in the different OS.
 As this approach is unfortunately OS dependent, the ability to change the current OS has been added in the special action menu for the reasons described in the previous section.
 Here is what is actually done for each supported OS:
 * *Windows*: it applies the third method described here http://www.fileformat.info/tip/microsoft/enter_unicode.htm which implicitly means that it relies on the numeric keypad.
-* *Mac*: it applies what is described in this article http://wwww.poynton.com/notes/misc/mac-unicode-hex-input.html which implicitly means that the *Unicode Hex Input* is enabled.
+* *Mac*: it applies what is described in this article http://wwww.poynton.com/notes/misc/mac-unicode-hex-input.html which implicitly means that the *Unicode Hex Input* needs to be enabled.
 * *Other*: it applies what is described here https://pthree.org/2006/11/30/its-unicode-baby/
 
 ## What else I need to know?
