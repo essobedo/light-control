@@ -90,8 +90,8 @@ public class Utils {
         int index = coordinates.indexOf(',');
         if (index == -1)
             throw new RuntimeException("The format of the coordinates is not correct, the separator is missing");
-        int x = Integer.parseInt(coordinates.substring(0, index));
-        int y = Integer.parseInt(coordinates.substring(index + 1));
+        int x = (int)Double.parseDouble(coordinates.substring(0, index));
+        int y = (int)Double.parseDouble(coordinates.substring(index + 1));
         return new Point(x, y);
     }
 

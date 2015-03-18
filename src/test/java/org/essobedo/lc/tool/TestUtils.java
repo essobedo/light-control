@@ -77,6 +77,9 @@ public class TestUtils {
         p = Utils.extractPoint("  1,1  ");
         Assert.assertEquals(1, p.x);
         Assert.assertEquals(1, p.y);
+        p = Utils.extractPoint("  1.1,1.8  ");
+        Assert.assertEquals(1, p.x);
+        Assert.assertEquals(1, p.y);
     }
 
     @Test
