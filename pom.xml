@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.essobedo</groupId>
     <artifactId>light-control</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.2</version>
     <packaging>war</packaging>
     <name>Light Control Main Project</name>
     <description>Take control of your server thanks to a light web application from any devices.</description>
@@ -21,7 +20,7 @@
         <connection>scm:git:git://github.com/essobedo/light-control</connection>
         <developerConnection>scm:git:git@github.com:essobedo/light-control</developerConnection>
         <url>https://github.com/essobedo/light-control</url>
-        <tag>HEAD</tag>
+        <tag>light-control-1.2</tag>
     </scm>
 
     <developers>
