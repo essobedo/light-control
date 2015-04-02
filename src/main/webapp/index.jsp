@@ -309,7 +309,7 @@ function updateHash(xmlhttp) {
     beforeQuery = null;
     return;
   }
-  if (xmlhttp.status = 200 && xmlhttp.responseText && xmlhttp.responseText != "") {
+  if (xmlhttp.status == 200 && xmlhttp.responseText && xmlhttp.responseText != "") {
     hash = xmlhttp.responseText;
   }
   var time = beforeQuery;
