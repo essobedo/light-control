@@ -26,3 +26,7 @@
 * Added the release note into the generated bundle
 * Fixed the bugs found by FindBugs
 * Removed the remaining System.out.println
+
+# v 1.4.1
+
+* Fix an incorrect test
