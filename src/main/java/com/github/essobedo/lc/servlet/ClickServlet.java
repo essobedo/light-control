@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 eXo Platform SAS.
+ * Copyright (C) 2015 essobedo.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -16,10 +16,10 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.essobedo.lc.servlet;
+package com.github.essobedo.lc.servlet;
 
-import org.essobedo.lc.service.Robot;
-import org.essobedo.lc.tool.Utils;
+import com.github.essobedo.lc.service.Robot;
+import com.github.essobedo.lc.tool.Utils;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -29,15 +29,18 @@ import java.awt.*;
 import java.io.IOException;
 
 /**
- * @author <a href="mailto:nicolas.filotto@exoplatform.com">Nicolas Filotto</a>
+ * This servlet will propagate the remote click on the local server
+ *
+ * @author <a href="mailto:nicolas.filotto@gmail.com">Nicolas Filotto</a>
  * @version $Id$
  */
-@WebServlet(name = "wheel", urlPatterns = {"/w"})
-public class WheelServlet extends HttpServlet {
+@WebServlet(name = "click", urlPatterns = {"/c"})
+public class ClickServlet extends HttpServlet {
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
         String positionValue = req.getParameter("p");
         Point coordinates = Utils.extractPoint(positionValue);
-        boolean up = req.getParameter("u") == null;
-        Robot.wheel(coordinates.x, coordinates.y, up);
+        boolean mainButton = req.getParameter("b") == null;
+        boolean doubleClick = req.getParameter("t") != null;
+        Robot.click(coordinates.x, coordinates.y, mainButton, doubleClick);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 eXo Platform SAS.
+ * Copyright (C) 2015 essobedo.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -16,10 +16,10 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.essobedo.lc.service;
+package com.github.essobedo.lc.service;
 
-import org.essobedo.lc.tool.OS;
-import org.essobedo.lc.tool.Utils;
+import com.github.essobedo.lc.tool.OS;
+import com.github.essobedo.lc.tool.Utils;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
@@ -30,7 +30,7 @@ import java.util.List;
  * This class is the facade of the class java.awt.Robot, allowing to simplify and reduce the code to
  * what we really need for the purpose of this project
  *
- * @author <a href="mailto:nicolas.filotto@exoplatform.com">Nicolas Filotto</a>
+ * @author <a href="mailto:nicolas.filotto@gmail.com">Nicolas Filotto</a>
  * @version $Id$
  */
 public class Robot {
